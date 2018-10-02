@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div id="root">
+    <form id="ipForm" class="form-control">
+        <div class="form-group">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon3">https://</span>
+                    <input type="text" class="form-control" name="ip" id="ip" placeholder="127.0.0.1"
+                               pattern="^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
+                               data-bv-regexp-message="It's should be valid IPv4" />      
+                    <span class="input-group-addon" id="basic-addon3">:</span>
+                    <input type="text" class="form-control" name="port" id="port" placeholder="5000"
+                               pattern="^\d{4,12}$"
+                               data-bv-regexp-message="It's should be valid port number" />   
+                    <span class="input-group-addon">/api/version</span>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-primary">Primary</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts{
+<script >     
+    $(document).ready(function() {
+    $('#ipForm').bootstrapValidator();
+});
+</script>
+}
