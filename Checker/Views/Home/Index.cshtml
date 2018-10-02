@@ -15,15 +15,16 @@
                                pattern="^\d{4,12}$"
                                data-bv-regexp-message="It's should be valid port number" />   
                     <span class="input-group-addon">/api/version</span>
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary" onclick="startChecking()">Run Healh Check</button>
-                    </div>
                 </div>
             </div>
         </div>
     </form>
+    <div class="col-md-4 col-md-offset-4" style="margin-top: 25px">
+        <button type="button" class="btn btn-success" onclick="startChecking()">Run Healh Check</button>
+        <button type="button" class="btn btn-danger" onclick="stopChecking()">Stop Healh Check</button>
+    </div>
     <div class="col-md-9 col-md-offset-2">
-        <canvas id="myChart" width="200" height="200"></canvas>
+        <canvas id="myChart"></canvas>
     </div>
 </div>
 
@@ -66,6 +67,9 @@ var myChart = new Chart(ctx, {
 function startChecking() {
     clearInterval(refreshIntervalId);
     refreshIntervalId = setInterval(httpRequest, 500);
+}
+function stopChecking() {
+    clearInterval(refreshIntervalId);
 }
 function httpRequest() {
     var url = "http://"+document.getElementById('ip').value+":"+document.getElementById('port').value+"/api/version";
