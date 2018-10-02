@@ -6,7 +6,7 @@
         <div class="form-group">
             <div class="col-md-6 col-md-offset-3">
                 <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon3">https://</span>
+                    <span class="input-group-addon" id="basic-addon3">http://</span>
                     <input type="text" class="form-control" name="ip" id="ip" placeholder="127.0.0.1"
                                pattern="^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
                                data-bv-regexp-message="It's should be valid IPv4" />      
@@ -16,17 +16,77 @@
                                data-bv-regexp-message="It's should be valid port number" />   
                     <span class="input-group-addon">/api/version</span>
                     <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary">Primary</button>
+                        <button type="button" class="btn btn-primary" onclick="startChecking()">Run Healh Check</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
+    <div class="col-md-9 col-md-offset-2">
+        <canvas id="myChart" width="200" height="200"></canvas>
+    </div>
 </div>
+
 @section Scripts{
 <script >     
-    $(document).ready(function() {
+$(document).ready(function() {
     $('#ipForm').bootstrapValidator();
 });
+var refreshIntervalId = setInterval(null, 1000000000000);
+var ctx = document.getElementById("myChart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: [{
+            label: '# of Requests',
+            data: [],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+function startChecking() {
+    clearInterval(refreshIntervalId);
+    refreshIntervalId = setInterval(httpRequest, 500);
+}
+function httpRequest() {
+    var url = "http://"+document.getElementById('ip').value+":"+document.getElementById('port').value+"/api/version";
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", url, false);
+    xmlHttp.send();
+    update(xmlHttp.responseText);
+}
+function update(version) {
+    var versionIndex = myChart.data.labels.indexOf(version);
+    if(versionIndex === -1){
+        versionIndex = myChart.data.labels.length;
+        myChart.data.labels[versionIndex] = version;
+        myChart.data.datasets[0].data[versionIndex] = 1;
+    } else {
+         myChart.data.datasets[0].data[versionIndex] += 1;
+    }
+    myChart.update();
+}
+function findLabel(version){
+    myChart.data.labels
+}
 </script>
 }
