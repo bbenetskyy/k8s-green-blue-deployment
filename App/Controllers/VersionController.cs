@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Checker.Controllers
+namespace VersionApi.Controllers
 {
     [Route("api/[controller]")]
     public class VersionController : Controller

@@ -11,19 +11,19 @@ When a new release has to be rolled out, its first deployed in the **Stage** env
 ## Creating WebApi
 For testing Blue/Green Deployment we will create simple API which will return just his current version.
 
-Let's start from creating .Net Core WebApi project names `Checker`
+Let's start from creating .Net Core WebApi project with name `VersionApi`
 ```powershell
-> dotnet new webapi -n Checker
+> dotnet new webapi -n VersionApi
 The template "ASP.NET Core Web API" was created successfully.
 This template contains technologies from parties other than Microsoft, see https://aka.ms/template-3pn for details.
 
 Processing post-creation actions...
-Running 'dotnet restore' on Checker\Checker.csproj...
-  Restoring packages for .\Checker\Checker.csproj...
-  Restore completed in 66.95 ms for .\Checker\Checker.csproj.
-  Generating MSBuild file .\Checker\obj\Checker.csproj.nuget.g.props.
-  Generating MSBuild file .\Checker\obj\Checker.csproj.nuget.g.targets.
-  Restore completed in 1.96 sec for .\Checker\Checker.csproj.
+Running 'dotnet restore' on VersionApi\VersionApi.csproj...
+  Restoring packages for .\VersionApi\VersionApi.csproj...
+  Restore completed in 66.95 ms for .\VersionApi\VersionApi.csproj.
+  Generating MSBuild file .\VersionApi\obj\VersionApi.csproj.nuget.g.props.
+  Generating MSBuild file .\VersionApi\obj\VersionApi.csproj.nuget.g.targets.
+  Restore completed in 1.96 sec for .\VersionApi\VersionApi.csproj.
 
 Restore succeeded.
 ```
@@ -35,7 +35,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Checker.Controllers
+namespace VersionApi.Controllers
 {
     [Route("api/[controller]")]
     public class VersionController : Controller
@@ -50,9 +50,9 @@ We will start from pre-release version `0.5`.
 
 Now our API is developed, we could check how it’s work:
 ```powershell
-> dotnet run --project .\Checker\
+> dotnet run --project .\VersionApi\
 Hosting environment: Production
-Content root path: .\Checker
+Content root path: .\VersionApi
 Now listening on: http://localhost:5000
 Application started. Press Ctrl+C to shut down.
 ```
@@ -102,7 +102,7 @@ RUN dotnet publish -c Release -o out
 FROM microsoft/dotnet:2.2-aspnetcore-runtime
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "Checker.dll"]
+ENTRYPOINT ["dotnet", "VersionApi.dll"]
 ```
 And `docker-compose.yml` file:
 ```docker
@@ -127,3 +127,4 @@ And how we could start a docker container based on our Version Api image with ve
 > We could also use `docker run bbenetskyy/version-api:v0.5` to start image
 
 ## Kubernetes Support
+
