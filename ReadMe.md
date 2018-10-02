@@ -126,5 +126,26 @@ And how we could start a docker container based on our Version Api image with ve
 ```
 > We could also use `docker run bbenetskyy/version-api:v0.5` to start image
 
+## Deploy Docker Image
+
+```powershell
+> docker login
+Authenticating with existing credentials...
+Login Succeeded
+> docker image list
+REPOSITORY                                 TAG                      IMAGE ID            CREATED             SIZE
+bbenetskyy/version-api                     v0.5                     c165de68b824        4 hours ago         299MB
+> #docker tag my_img $docker_name/my_img
+> docker push bbenetskyy/version-api
+The push refers to repository [docker.io/bbenetskyy/version-api]
+549c267c90dc: Pushed
+cf35c5700b01: Pushed
+b267b4a2dc6c: Mounted from microsoft/dotnet
+afd643d90d06: Mounted from microsoft/dotnet
+e21eadb9b098: Mounted from microsoft/dotnet
+8b15606a9e3e: Mounted from microsoft/dotnet
+v0.5: digest: sha256:b1265a7dffff612128e77b1b2513c31858347e8da5a98de4cec9778e50b2e6ab size: 1582
+```
+
 ## Kubernetes Support
 
