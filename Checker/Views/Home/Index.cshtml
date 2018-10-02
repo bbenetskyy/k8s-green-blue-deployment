@@ -35,38 +35,11 @@ $(document).ready(function() {
 });
 var refreshIntervalId = setInterval(null, 1000000000000);
 var ctx = document.getElementById("myChart").getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: [],
-        datasets: [{
-            label: '# of Requests',
-            data: [],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        }
-    }
-});
+var myChart = createChart();
 function startChecking() {
     clearInterval(refreshIntervalId);
-    refreshIntervalId = setInterval(httpRequest, 500);
+    myChart = createChart();
+    refreshIntervalId = setInterval(httpRequest, 100);
 }
 function stopChecking() {
     clearInterval(refreshIntervalId);
@@ -91,6 +64,37 @@ function update(version) {
 }
 function findLabel(version){
     myChart.data.labels
+}
+function createChart(){
+    return new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: '# of Requests',
+                data: [],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
 }
 </script>
 }
