@@ -2,9 +2,9 @@ version: '3.4'
 
 services:
   version-api:
-    image: bbenetskyy/version-api:v2.1
+    image: bbenetskyy/version-api:v2.2
     ports:
-      - "5000:80"
+      - "80:30500"
     build:
       context: .
       dockerfile: dockerfile

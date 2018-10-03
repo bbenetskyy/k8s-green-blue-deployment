@@ -39,6 +39,7 @@ namespace VersionApi
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
