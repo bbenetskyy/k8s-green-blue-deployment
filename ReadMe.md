@@ -5,6 +5,13 @@ Its typically achieved by keeping two identical production environments - **Prod
 
 When a new release has to be rolled out, its first deployed in the **Stage** environment. When all the testing is done, the live traffic is moved to **Stage** which becomes the **Prod** environment, and current **Prod** environment becomes the **Stage**. There is added benefit of a fast rollback by just changing route if new issue is found with live traffic.
 
+!!!!!!!!!!!!!!!!!!!
+
+Add Docker for Checker
+
+!!!!!!!!!!!!!!!!!!!
+
+
 
 # Version App
 
@@ -88,7 +95,7 @@ And instructions how to build our image for `dockerfile` file:
 FROM microsoft/dotnet:2.2-sdk AS build-env
 WORKDIR /app
 EXPOSE 5000
-EXPOSE 80
+EXPOSE 5000
 
 # Copy csproj and restore as distinct layers
 COPY *.csproj ./
@@ -112,7 +119,7 @@ services:
   version-api:
     image: bbenetskyy/version-api:v0.5
     ports:
-      - "5000:80"
+      - "5000:5000"
     build:
       context: .
       dockerfile: dockerfile
@@ -128,6 +135,11 @@ And how we could start a docker container based on our Version Api image with ve
 
 ## Deploy Docker Image
 
+If you are using K8s with minikube, you should configure it to [see local images](https://stackoverflow.com/questions/42564058/how-to-use-local-docker-images-with-minikube).
+
+If you are using K8s with Docker Edge, it should be already discovered.
+
+But we will push it into our account at Docker Hub to be more close to production reality:
 ```powershell
 > docker login
 Authenticating with existing credentials...
@@ -149,3 +161,84 @@ v0.5: digest: sha256:b1265a7dffff612128e77b1b2513c31858347e8da5a98de4cec9778e50b
 
 ## Kubernetes Support
 
+Let's write our definition of Deployment. In our example I will use [K8s v1.10 API](https://v1-10.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/).
+
+If you don't sure your version of K8s you could check it at `kubectl`:
+```powershell
+> kubectl version
+Client Version: version.Info{Major:"1", Minor:"10", GitVersion:"v1.10.3", GitCommit:"2bba0127d85d5a46ab4b778548be28623b32d0b0", GitTreeState:"clean", BuildDate:"2018-05-21T09:17:39Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"windows/amd64"}
+Server Version: version.Info{Major:"1", Minor:"10", GitVersion:"v1.10.3", GitCommit:"2bba0127d85d5a46ab4b778548be28623b32d0b0", GitTreeState:"clean", BuildDate:"2018-05-21T09:05:37Z", GoVersion:"go1.9.3", Compiler:"gc", Platform:"linux/amd64"}
+```
+
+According to API we need to use `apiVersion: apps/v1beta1` for Deployment. 
+
+We also want to have 10 containers(`replicas: 10`) with our image(`image: bbenetskyy/version-api:v0.5`). 
+
+According to standard's policy we also specify resources memory(`memory: "64M"`) and cpy(`cpu: "250m"`) limit's.
+
+Open at minion port 80 for container - `containerPort: 80`.
+
+Define labels - `app: version-api` and containers names - `name: version-api-pod`
+
+Here is complete YAML template:
+```yml
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: version-api
+spec:
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        app: version-api
+    spec:
+      containers:
+      - name: version-api-pod
+        image: bbenetskyy/version-api:v0.5
+        ports:
+        - containerPort: 80
+        #resources:
+        #  requests:
+        #    memory: "1024M"
+        #    cpu: "2"
+        #  limits:
+        #    memory: "2048M"
+        #    cpu: "4"
+```
+> For me locally limits resources does not working and each time returns `0/1 nodes are available: 1 Insufficient cpu.` for all nodes except 1 or 2 of 10.
+
+For open it outside we need to specify a Service.
+
+According to API we need to use `apiVersion: v1` for Service. 
+
+Open outside port 80(`port: 80`) and 80 to container(`targetPort: 80`). For nodePort we can't assign 80 because provided port is not in the valid range. The range of valid ports is 30000-32767 - `nodePort: 30500`
+
+Select our nodes by labels defined for Deployment `app: version-api`
+
+Set what type of Service we want - `type: LoadBalancer`
+
+
+Here is complete YAML template:
+```yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: version-api-service
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30500
+  selector:
+    app: version-api
+  type: LoadBalancer
+```
+
+Now we could apply it:
+```powershell
+> kubectl apply -f .\deploy_v0.5.yml
+deployment.apps "version-api" created
+service "version-api-service" created
+```
