@@ -1,0 +1,16 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: version-api
+spec:
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        app: version-api
+    spec:
+      containers:
+      - name: version-api-pod
+        image: bbenetskyy/version-api:v2.0
+        ports:
+        - containerPort: 80
