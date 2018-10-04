@@ -10,6 +10,6 @@ namespace VersionApi.Controllers
     public class VersionController : Controller
     {
         [HttpGet]
-        public string Get() => "v2.0";
+        public string Get() => "v1.1";
     }
 }

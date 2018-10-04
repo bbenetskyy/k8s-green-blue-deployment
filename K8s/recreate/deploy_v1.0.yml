@@ -4,14 +4,14 @@ metadata:
   name: version-api-deploy
   labels:
     type: version-api
-    app: v1.0
 spec:
   replicas: 5
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         type: version-api
-        app: v1.0
     spec:
       containers:
       - name: version-api-pod

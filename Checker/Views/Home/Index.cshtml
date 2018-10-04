@@ -46,16 +46,20 @@ function stopChecking() {
 }
 function httpRequest() {
     var url = "http://"+document.getElementById('ip').value+":"+document.getElementById('port').value;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", url, false);
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-           if (xmlHttp.status == 200) {
-                update(xmlHttp.responseText);
-           }
-        }
-    };
-    xmlHttp.send();
+    try {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", url, false);
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+               if (xmlHttp.status == 200) {
+                    update(xmlHttp.responseText);
+               }
+            }
+        };
+        xmlHttp.send();
+    } catch (err) {
+        update("Error");
+    }
 }
 function update(version) {
     var versionIndex = myChart.data.labels.indexOf(version);

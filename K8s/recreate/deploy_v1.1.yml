@@ -4,17 +4,17 @@ metadata:
   name: version-api-deploy
   labels:
     type: version-api
-    app: v1.0
 spec:
   replicas: 5
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         type: version-api
-        app: v1.0
     spec:
       containers:
       - name: version-api-pod
-        image: bbenetskyy/version-api:v1.0
+        image: bbenetskyy/version-api:v1.1
         ports:
         - containerPort: 80
