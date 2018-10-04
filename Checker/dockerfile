@@ -1,0 +1,19 @@
+FROM microsoft/dotnet:2-sdk AS build-env
+WORKDIR /app
+EXPOSE 5050
+EXPOSE 80
+
+# Copy csproj and restore as distinct layers
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM microsoft/dotnet:2-aspnetcore-runtime
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENV ASPNETCORE_URLS http://*:5050
+ENTRYPOINT ["dotnet", "Checker.dll", "--server.urls", "http://*:5050"]
