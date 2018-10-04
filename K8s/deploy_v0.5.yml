@@ -2,6 +2,9 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: version-api-deploy
+  labels:
+    type: version-api
+    app: v0.5
 spec:
   replicas: 5
   template:
@@ -15,17 +18,3 @@ spec:
         image: bbenetskyy/version-api:v0.5
         ports:
         - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: version-api-service
-spec:
-  ports:
-    - name: http
-      port: 80
-      targetPort: 80
-      nodePort: 30500
-  selector:
-    type: version-api
-  type: NodePort

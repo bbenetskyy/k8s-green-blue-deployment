@@ -2,6 +2,9 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: version-api-deploy-v2
+  labels:
+    type: version-api
+    app: v2.0
 spec:
   replicas: 5
   template:
