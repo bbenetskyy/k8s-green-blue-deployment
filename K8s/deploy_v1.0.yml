@@ -1,9 +1,9 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: version-api
+  name: version-api-deploy
 spec:
-  replicas: 10
+  replicas: 5
   template:
     metadata:
       labels:

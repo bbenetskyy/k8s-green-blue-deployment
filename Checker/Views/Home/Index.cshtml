@@ -45,11 +45,17 @@ function stopChecking() {
     clearInterval(refreshIntervalId);
 }
 function httpRequest() {
-    var url = "http://"+document.getElementById('ip').value+":"+document.getElementById('port').value+"/api/version";
+    var url = "http://"+document.getElementById('ip').value+":"+document.getElementById('port').value;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", url, false);
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+           if (xmlHttp.status == 200) {
+                update(xmlHttp.responseText);
+           }
+        }
+    };
     xmlHttp.send();
-    update(xmlHttp.responseText);
 }
 function update(version) {
     var versionIndex = myChart.data.labels.indexOf(version);
@@ -79,7 +85,14 @@ function createChart(){
                     'rgba(255, 206, 86, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
                     'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 0, 0, 0.4)',
+                    'rgba(240, 81, 59, 0.4)',
+                    'rgba(150, 81, 59, 0.4)',
+                    'rgba(150, 77, 24, 0.4)',
+                    'rgba(330, 62, 34, 0.4)',
+                    'rgba(60, 62, 34, 0.4)',
+                    'rgba(330, 100, 49, 0.4)'
                 ],
                 borderWidth: 1
             }]

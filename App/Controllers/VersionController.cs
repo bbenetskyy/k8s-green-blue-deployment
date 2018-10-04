@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace VersionApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/")]
     public class VersionController : Controller
     {
         [HttpGet]
-        public string Get() => "v0.5";
+        public string Get() => "v2.0";
     }
 }

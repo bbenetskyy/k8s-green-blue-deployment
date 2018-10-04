@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: rc-v0.5
+  labels:
+    type: py
+    app: v0.5
+spec:
+  replicas: 5
+  selector:
+    app: v0.5
+  template:
+    metadata:
+      labels:
+        type: py
+        app: v0.5
+    spec:
+      containers:
+      - name: py-pod
+        image: bbenetskyy/k8s-python-api:v0.5
+        ports:
+        - containerPort: 80

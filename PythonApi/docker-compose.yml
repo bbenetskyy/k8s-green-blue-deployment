@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   version-api:
-    image: bbenetskyy/version-api:v2.0
+    image: bbenetskyy/k8s-python-api:v1.0
     ports:
       - "5000:80"
     build:
