@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: rc-py
+  labels:
+    type: py
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable
+                         # during the rolling update
+  template:
+    metadata:
+      labels:
+        type: py
+    spec:
+      containers:
+      - name: py-pod
+        image: bbenetskyy/k8s-python-api:v0.5
+        ports:
+        - containerPort: 80

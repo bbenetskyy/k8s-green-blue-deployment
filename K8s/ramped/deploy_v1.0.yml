@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: version-api-deploy
+  labels:
+    type: version-api
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable
+                         # during the rolling update
+  template:
+    metadata:
+      labels:
+        type: version-api
+    spec:
+      containers:
+      - name: version-api-pod
+        image: bbenetskyy/version-api:v1.0
+        ports:
+        - containerPort: 80
