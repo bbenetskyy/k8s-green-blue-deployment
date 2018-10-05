@@ -1,18 +1,16 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: api-v0.5
-  labels:
-    app: v0.5
+  name: py-v0.6
 spec:
-  replicas: 5
+  replicas: 1
   template:
     metadata:
       labels:
-        app: v0.5
+        type: py
     spec:
       containers:
-      - name: version-api-pod
-        image: bbenetskyy/version-api:v0.5
+      - name: py-pod
+        image: bbenetskyy/k8s-python-api:v0.6
         ports:
         - containerPort: 80

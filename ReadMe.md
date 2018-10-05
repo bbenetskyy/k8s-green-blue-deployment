@@ -243,16 +243,26 @@ deployment.apps "version-api" created
 service "version-api-service" created
 > kubectl apply -f .\deploy_v1.0.yml --record
 deployment.apps "version-api" configured
-> k rollout  history deploy version-api
+> kubectl rollout  history deploy version-api
 deployments "version-api"
 REVISION  CHANGE-CAUSE
 1         <none>
 2         kubectl.exe apply --filename=.\deploy_v1.0.yml --record=true
-> k rollout  undo deploy version-api --to-revision=1
+> kubectl rollout  undo deploy version-api --to-revision=1
 deployment.apps "version-api"
 PS C:\Users\bbenetskyi\Desktop\k8s-green-blue-deployment\K8s\ramped> k rollout  history deploy version-api
 deployments "version-api"
 REVISION  CHANGE-CAUSE
 2         kubectl.exe apply --filename=.\deploy_v1.0.yml --record=true
 3         <none>
+> kubectl scale --replicas=1 deploy version-api --record
+deployment.extensions "version-api" scaled
 ```
+
+## [K8s Deployment Strategies](https://github.com/ContainerSolutions/k8s-deployment-strategies)
+
+
+## Install Heml
+
+
+

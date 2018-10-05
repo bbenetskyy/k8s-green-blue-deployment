@@ -6,8 +6,6 @@ metadata:
     app: py-v1.0
 spec:
   replicas: 5
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
