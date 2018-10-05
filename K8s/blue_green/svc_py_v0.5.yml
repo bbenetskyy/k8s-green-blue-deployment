@@ -10,4 +10,4 @@ spec:
       targetPort: 80
       nodePort: 30501
   selector:
-    type: py
+    app: py-v0.5

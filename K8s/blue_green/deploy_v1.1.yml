@@ -1,0 +1,20 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: api-v1.1
+  labels:
+    app: v1.1
+spec:
+  replicas: 5
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: v1.1
+    spec:
+      containers:
+      - name: version-api-pod
+        image: bbenetskyy/version-api:v1.1
+        ports:
+        - containerPort: 80

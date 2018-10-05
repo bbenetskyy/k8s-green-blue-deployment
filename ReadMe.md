@@ -241,4 +241,18 @@ Now we could apply it:
 > kubectl apply -f .\deploy_v0.5.yml
 deployment.apps "version-api" created
 service "version-api-service" created
+> kubectl apply -f .\deploy_v1.0.yml --record
+deployment.apps "version-api" configured
+> k rollout  history deploy version-api
+deployments "version-api"
+REVISION  CHANGE-CAUSE
+1         <none>
+2         kubectl.exe apply --filename=.\deploy_v1.0.yml --record=true
+> k rollout  undo deploy version-api --to-revision=1
+deployment.apps "version-api"
+PS C:\Users\bbenetskyi\Desktop\k8s-green-blue-deployment\K8s\ramped> k rollout  history deploy version-api
+deployments "version-api"
+REVISION  CHANGE-CAUSE
+2         kubectl.exe apply --filename=.\deploy_v1.0.yml --record=true
+3         <none>
 ```
