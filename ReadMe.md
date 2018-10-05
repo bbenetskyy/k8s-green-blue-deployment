@@ -261,8 +261,75 @@ deployment.extensions "version-api" scaled
 
 ## [K8s Deployment Strategies](https://github.com/ContainerSolutions/k8s-deployment-strategies)
 
+## Azure Blue/Green Deployment
 
-## Install Heml
-
-
-
+Create all in Azure Portal and after it login in PowerShell:
+```powershell
+> az aks get-credentials --resource-group vm-ps-test --name k8s-test-name
+> kubectl config current-context
+```
+Install dashboard:
+```powershell
+> az aks install-cli
+> az aks browse --resource-group vm-ps-test --name k8s-test-name
+```
+When you create a static public IP address for use with AKS, the IP address resource must be created in the node resource group. Get the resource group name with the `az aks show` command and add the `--query nodeResourceGroup` query parameter:
+```powershell
+> az aks show --resource-group vm-ps-test --name k8s-test-name  --query nodeResourceGroup  -o tsv
+MC_vm-ps-test_k8s-test-name_westeurope
+```
+Now create a static public IP address with the `az network public ip create` command. Specify the node resource group name obtained in the previous command:
+```powershell
+> az network public-ip create `
+>>     --resource-group MC_vm-ps-test_k8s-test-name_westeurope `
+>>     --name k8s-test-name `
+>>     --allocation-method static
+{
+  "publicIp": {
+    "dnsSettings": null,
+    "etag": "******",
+    "id": "******",
+    "idleTimeoutInMinutes": 4,
+    "ipAddress": "13.94.171.227",
+    "ipConfiguration": null,
+    "ipTags": [],
+    "location": "westeurope",
+    "name": "k8s-test-name",
+    "provisioningState": "Succeeded",
+    "publicIpAddressVersion": "IPv4",
+    "publicIpAllocationMethod": "Static",
+    "resourceGroup": "MC_vm-ps-test_k8s-test-name_westeurope",
+    "resourceGuid": "******",
+    "sku": {
+      "name": "Basic",
+      "tier": "Regional"
+    },
+    "tags": null,
+    "type": "Microsoft.Network/publicIPAddresses",
+    "zones": null
+  }
+}
+```
+You can later get the public IP address using the `az network public-ip list` command. Specify the name of the node resource group, and then query for the ipAddress as shown in the following example:
+```powershell
+> az network public-ip list --resource-group MC_vm-ps-test_k8s-test-name_westeurope --query [0].ipAddress --output tsv
+13.94.171.227
+```
+Add it into your svc and change type to load balancer:
+```yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-svc
+spec:
+  loadBalancerIP: 13.94.171.227
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30500
+  selector:
+    app: v0.5
+```
+Apply changes and you will see your application at http://13.94.171.227:80/
