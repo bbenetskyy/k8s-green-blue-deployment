@@ -95,7 +95,7 @@ And instructions how to build our image for `dockerfile` file:
 FROM microsoft/dotnet:2.2-sdk AS build-env
 WORKDIR /app
 EXPOSE 5000
-EXPOSE 5000
+EXPOSE 80
 
 # Copy csproj and restore as distinct layers
 COPY *.csproj ./
@@ -119,7 +119,7 @@ services:
   version-api:
     image: bbenetskyy/version-api:v0.5
     ports:
-      - "5000:5000"
+      - "5000:80"
     build:
       context: .
       dockerfile: dockerfile
