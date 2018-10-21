@@ -44,7 +44,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace VersionApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/")]
     public class VersionController : Controller
     {
         [HttpGet]
