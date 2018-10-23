@@ -265,25 +265,25 @@ deployment.extensions "version-api" scaled
 
 Create all in Azure Portal and after it login in PowerShell:
 ```powershell
-> az aks get-credentials --resource-group vm-ps-test --name k8s-test-name
+> az aks get-credentials --resource-group vm-ps-test --name k8s
 > kubectl config current-context
 ```
 Install dashboard:
 ```powershell
 > az aks install-cli
-> az aks browse --resource-group vm-ps-test --name k8s-test-name
+> az aks browse --resource-group vm-ps-test --name k8s
 ```
 When you create a static public IP address for use with AKS, the IP address resource must be created in the node resource group. Get the resource group name with the `az aks show` command and add the `--query nodeResourceGroup` query parameter:
 ```powershell
-> az aks show --resource-group vm-ps-test --name k8s-test-name  --query nodeResourceGroup  -o tsv
-MC_vm-ps-test_k8s-test-name_westeurope
+> az aks show --resource-group vm-ps-test --name k8s  --query nodeResourceGroup  -o tsv
+MC_vm-ps-test_k8s_westeurope
 ```
 Now create a static public IP address with the `az network public ip create` command. Specify the node resource group name obtained in the previous command:
 ```powershell
 > az network public-ip create `
->>     --resource-group MC_vm-ps-test_k8s-test-name_westeurope `
->>     --name k8s-test-name `
->>     --allocation-method static
+     --resource-group MC_vm-ps-test_k8s_westeurope `
+     --name k8s `
+     --allocation-method static
 {
   "publicIp": {
     "dnsSettings": null,
@@ -294,11 +294,11 @@ Now create a static public IP address with the `az network public ip create` com
     "ipConfiguration": null,
     "ipTags": [],
     "location": "westeurope",
-    "name": "k8s-test-name",
+    "name": "k8s",
     "provisioningState": "Succeeded",
     "publicIpAddressVersion": "IPv4",
     "publicIpAllocationMethod": "Static",
-    "resourceGroup": "MC_vm-ps-test_k8s-test-name_westeurope",
+    "resourceGroup": "MC_vm-ps-test_k8s_westeurope",
     "resourceGuid": "******",
     "sku": {
       "name": "Basic",
@@ -312,7 +312,7 @@ Now create a static public IP address with the `az network public ip create` com
 ```
 You can later get the public IP address using the `az network public-ip list` command. Specify the name of the node resource group, and then query for the ipAddress as shown in the following example:
 ```powershell
-> az network public-ip list --resource-group MC_vm-ps-test_k8s-test-name_westeurope --query [0].ipAddress --output tsv
+> az network public-ip list --resource-group MC_vm-ps-test_k8s_westeurope --query [0].ipAddress --output tsv
 13.94.171.227
 ```
 Add it into your svc and change type to load balancer:
